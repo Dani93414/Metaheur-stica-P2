@@ -1,4 +1,6 @@
 import numpy as np
+from operadores import cruce as cr
+from operadores import mutacion as mt
 
 # ---------- INICIALIZACIÓN ----------
 def initialize_population(size, bounds=(-5, 5)):
@@ -11,32 +13,9 @@ def evaluate(individual, x_vals, y_vals):
                    g*x_vals**5 + h*x_vals**6 + i*x_vals**7)
     return np.mean((preds - y_vals)**2)
 
-# ---------- CRUCE ----------
-def cruce_uniforme(padres, prob_cruce):
-    hijos = []
-    for i in range(0, len(padres), 2):
-        p1 = padres[i]
-        p2 = padres[i+1]
-        if np.random.rand() < prob_cruce:
-            mask = np.random.rand(len(p1)) < 0.5
-            hijo1 = np.where(mask, p1, p2)
-            hijo2 = np.where(mask, p2, p1)
-        else:
-            hijo1, hijo2 = p1.copy(), p2.copy()
-        hijos.extend([hijo1, hijo2])
-    return hijos
-
 # (a implementar)
 # def cruce_blx(padres, prob_cruce): ...
 # def cruce_ejemplo() ...
-
-# ---------- MUTACIÓN ----------
-def mutacion_gaussiana(hijos, prob_mutacion, sigma=0.1):
-    for hijo in hijos:
-        for i in range(len(hijo)):
-            if np.random.rand() < prob_mutacion:
-                hijo[i] += np.random.normal(0, sigma)
-    return hijos
 
 # (a implementar)
 # def mutacion_intercambio(hijos, prob_mutacion): ...
@@ -60,7 +39,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
 
         # Operador de cruce según selección
         if op_cruce == 1:
-            hijos = cruce_uniforme(padres, prob_cruce)
+            hijos = cr.cruce_uniforme(padres, prob_cruce)
         elif op_cruce == 2:
             raise NotImplementedError("Cruce por un punto (a implementar)")
         elif op_cruce == 3:
@@ -70,7 +49,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
 
         # Operador de mutación según selección
         if op_mutacion == 1:
-            hijos_mutados = mutacion_gaussiana(hijos, prob_mutacion)
+            hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mutacion)
         elif op_mutacion == 2:
             raise NotImplementedError("Mutación por intercambio (a implementar)")
         elif op_mutacion == 3:
