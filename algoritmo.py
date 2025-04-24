@@ -43,7 +43,9 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         elif op_cruce == 2:
             raise NotImplementedError("Cruce por un punto (a implementar)")
         elif op_cruce == 3:
-            raise NotImplementedError("Cruce BLX-alpha (a implementar)")
+            hijos = cr.cruce_blx(padres, prob_cruce)
+        elif op_cruce == 4:
+            hijos = cr.cruce_aritmetico_simple(padres, prob_cruce)
         else:
             raise ValueError("Opción de cruce inválida")
 
@@ -53,7 +55,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         elif op_mutacion == 2:
             raise NotImplementedError("Mutación por intercambio (a implementar)")
         elif op_mutacion == 3:
-            raise NotImplementedError("Mutación uniforme (a implementar)")
+            hijos_mutados = mt.mutacion_uniforme(hijos, prob_mutacion)
         else:
             raise ValueError("Opción de mutación inválida")
 
