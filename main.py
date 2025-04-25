@@ -14,16 +14,17 @@ op_seleccion = int(input("Opción [1-4]: "))
 
 # --- Cruce ---
 print("\nSelecciona operador de cruce:")
-print("1. Cruce uniforme (implementado)")
-print("2. Cruce por un punto (a implementar)")
-print("3. Cruce BLX-alpha (a implementar)")
-op_cruce = int(input("Opción [1-3]: "))
+print("1. Cruce uniforme")
+print("2. Cruce por un punto")
+print("3. Cruce BLX-alpha")
+print("4. Cruce aritmético simple")
+op_cruce = int(input("Opción [1-4]: "))
 
 # --- Mutación ---
 print("\nSelecciona operador de mutación:")
-print("1. Mutación gaussiana (implementado)")
-print("2. Mutación por intercambio (a implementar)")
-print("3. Mutación uniforme (a implementar)")
+print("1. Mutación gaussiana")
+print("2. Mutación por intercambio")
+print("3. Mutación uniforme")
 op_mutacion = int(input("Opción [1-3]: "))
 
 # --- Parámetros globales ---

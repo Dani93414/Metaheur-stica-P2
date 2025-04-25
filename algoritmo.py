@@ -33,29 +33,29 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         elif op_seleccion == 4:
             padres = sel.seleccion_emparejamiento_inverso(population, fitness, tamaño_poblacion)
         else:
-            raise ValueError("Opción de selección inválida")
+            raise ValueError("Opción de selección no válida")
 
         # Operadores de cruce
         if op_cruce == 1:
             hijos = cr.cruce_uniforme(padres, prob_cruce)
         elif op_cruce == 2:
-            raise NotImplementedError("Cruce por un punto (a implementar)")
+            hijos = cr.cruce_un_punto(padres, prob_cruce)
         elif op_cruce == 3:
             hijos = cr.cruce_blx(padres, prob_cruce)
         elif op_cruce == 4:
             hijos = cr.cruce_aritmetico_simple(padres, prob_cruce)
         else:
-            raise ValueError("Opción de cruce inválida")
+            raise ValueError("Opción de cruce no válida")
 
         # Operador de mutación
         if op_mutacion == 1:
             hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mutacion)
         elif op_mutacion == 2:
-            raise NotImplementedError("Mutación por intercambio (a implementar)")
+            hijos_mutados = mt.mutacion_intercambio(hijos, prob_mutacion)
         elif op_mutacion == 3:
             hijos_mutados = mt.mutacion_uniforme(hijos, prob_mutacion)
         else:
-            raise ValueError("Opción de mutación inválida")
+            raise ValueError("Opción de mutación no válida")
 
         # Evaluación de descendientes
         hijos_fitness = np.array([evaluate(ind, x_vals, y_vals) for ind in hijos_mutados])
