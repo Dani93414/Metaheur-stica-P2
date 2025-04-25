@@ -17,13 +17,21 @@ def evaluate(individual, x_vals, y_vals):
 # ---------- ALGORITMO PRINCIPAL ----------
 def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutacion,
                        x_vals, y_vals, op_cruce, op_mutacion, op_seleccion):
-    
+
     population = initialize_population(tamaño_poblacion)
+
+    # Estadísticas por generación
+    historico_mejores = []
+    historico_promedios = []
 
     for gen in range(n_generaciones):
         fitness = np.array([evaluate(ind, x_vals, y_vals) for ind in population])
 
-        # Operadores de selección
+        # Guardar estadísticas
+        historico_mejores.append(np.min(fitness))
+        historico_promedios.append(np.mean(fitness))
+
+        # Selección
         if op_seleccion == 1:
             padres = sel.seleccion_torneo(population, fitness, tamaño_poblacion)
         elif op_seleccion == 2:
@@ -35,7 +43,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         else:
             raise ValueError("Opción de selección no válida")
 
-        # Operadores de cruce
+        # Cruce
         if op_cruce == 1:
             hijos = cr.cruce_uniforme(padres, prob_cruce)
         elif op_cruce == 2:
@@ -47,29 +55,29 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         else:
             raise ValueError("Opción de cruce no válida")
 
-        # Operador de mutación
+        # Mutación adaptativa
+        prob_mut_actual = prob_mutacion * (1 - gen / n_generaciones)
+
         if op_mutacion == 1:
-            hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mutacion)
+            hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mut_actual)
         elif op_mutacion == 2:
             hijos_mutados = mt.mutacion_intercambio(hijos, prob_mutacion)
         elif op_mutacion == 3:
-            hijos_mutados = mt.mutacion_uniforme(hijos, prob_mutacion)
+            hijos_mutados = mt.mutacion_uniforme(hijos, prob_mut_actual)
         else:
             raise ValueError("Opción de mutación no válida")
 
-        # Evaluación de descendientes
+        # Evaluación descendientes
         hijos_fitness = np.array([evaluate(ind, x_vals, y_vals) for ind in hijos_mutados])
 
-        # Elitismo: conservar el mejor de la población anterior
+        # Elitismo
         elite_idx = np.argmin(fitness)
         elite = population[elite_idx]
         elite_fit = fitness[elite_idx]
 
-        # Reemplazo con elite
         population = hijos_mutados
         population[np.random.randint(len(population))] = elite
 
-        # Estadísticas
         print(f"Generación {gen}: Mejor error = {elite_fit:.5f}")
 
     # Resultado final
@@ -80,3 +88,6 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
     print("\nMejor individuo encontrado:")
     print(f"Coeficientes: {np.round(best_ind, 4)}")
     print(f"Error: {best_fit:.5f}")
+
+    # Devolver estadísticas por si quieres graficar
+    return best_ind, historico_mejores, historico_promedios
