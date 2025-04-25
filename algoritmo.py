@@ -1,6 +1,7 @@
 import numpy as np
 from operadores import cruce as cr
 from operadores import mutacion as mt
+from operadores import seleccion as sel
 
 # ---------- INICIALIZACIÓN ----------
 def initialize_population(size, bounds=(-5, 5)):
@@ -13,31 +14,28 @@ def evaluate(individual, x_vals, y_vals):
                    g*x_vals**5 + h*x_vals**6 + i*x_vals**7)
     return np.mean((preds - y_vals)**2)
 
-# (a implementar)
-# def cruce_blx(padres, prob_cruce): ...
-# def cruce_ejemplo() ...
-
-# (a implementar)
-# def mutacion_intercambio(hijos, prob_mutacion): ...
-# def mutacion_uniforme(hijos, prob_mutacion): ...
-
 # ---------- ALGORITMO PRINCIPAL ----------
 def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutacion,
-                       x_vals, y_vals, op_cruce, op_mutacion):
+                       x_vals, y_vals, op_cruce, op_mutacion, op_seleccion):
     
     population = initialize_population(tamaño_poblacion)
 
     for gen in range(n_generaciones):
         fitness = np.array([evaluate(ind, x_vals, y_vals) for ind in population])
 
-        # Selección: torneo binario simple
-        padres = []
-        for _ in range(tamaño_poblacion):
-            i, j = np.random.randint(0, tamaño_poblacion, 2)
-            ganador = population[i] if fitness[i] < fitness[j] else population[j]
-            padres.append(ganador)
+        # Operadores de selección
+        if op_seleccion == 1:
+            padres = sel.seleccion_torneo(population, fitness, tamaño_poblacion)
+        elif op_seleccion == 2:
+            padres = sel.seleccion_ruleta(population, fitness, tamaño_poblacion)
+        elif op_seleccion == 3:
+            padres = sel.seleccion_muestreo_estocastico(population, fitness, tamaño_poblacion)
+        elif op_seleccion == 4:
+            padres = sel.seleccion_emparejamiento_inverso(population, fitness, tamaño_poblacion)
+        else:
+            raise ValueError("Opción de selección inválida")
 
-        # Operador de cruce según selección
+        # Operadores de cruce
         if op_cruce == 1:
             hijos = cr.cruce_uniforme(padres, prob_cruce)
         elif op_cruce == 2:
@@ -49,7 +47,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         else:
             raise ValueError("Opción de cruce inválida")
 
-        # Operador de mutación según selección
+        # Operador de mutación
         if op_mutacion == 1:
             hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mutacion)
         elif op_mutacion == 2:

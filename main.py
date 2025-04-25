@@ -4,6 +4,13 @@ from algoritmo import algoritmo_genetico
 # --- MENÚ de selección de operadores ---
 
 print(" Selección de operadores")
+# --- Selección ---
+print("\nSelecciona método de selección:")
+print("1. Torneo binario")
+print("2. Ruleta")
+print("3. Muestreo Estocástico Universal")
+print("4. Emparejamiento variado inverso")
+op_seleccion = int(input("Opción [1-4]: "))
 
 # --- Cruce ---
 print("\nSelecciona operador de cruce:")
@@ -22,9 +29,13 @@ op_mutacion = int(input("Opción [1-3]: "))
 # --- Parámetros globales ---
 np.random.seed(42)
 
-# Simulación de datos (puedes cargar los tuyos si ya los tienes)
-x_vals = np.linspace(-1, 1, 100)
-y_vals = np.exp(1 + 2*x_vals + 0.5*x_vals**2 - 0.2*x_vals**3 + x_vals**4 - 0.3*x_vals**5 + 0.1*x_vals**6 - 0.05*x_vals**7)
+x_vals = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.3, -0.1, -1.6, -1.7, -0.83, -0.82, -1.98, -1.99])
+
+y_vals = np.array([
+    3.490342957, 3.649406057, 3.850310157, 4.110680257, 4.444613357, 4.864490457,
+    8.945762957, 14.907555257, 3.3508758574, -10.443986642, -10.134869742,
+    -0.0700854481, 0.0372406176, -0.2501897336, 0.4626335969
+])
 
 # Ejecutar el algoritmo
 algoritmo_genetico(
@@ -35,5 +46,6 @@ algoritmo_genetico(
     x_vals=x_vals,
     y_vals=y_vals,
     op_cruce=op_cruce,
-    op_mutacion=op_mutacion
+    op_mutacion=op_mutacion,
+    op_seleccion=op_seleccion
 )
