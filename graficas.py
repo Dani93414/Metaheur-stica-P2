@@ -11,16 +11,22 @@ import numpy as np
 # - y_true: array de valores reales
 # - y_pred: array de valores predichos (por el mejor individuo)
 
-def plot_mejor_fitness(resultados_fitness, save_path=None):
+
+def plot_fitness_y_error_juntos(resultados_fitness, save_path=None):
     plt.figure(figsize=(10,6))
     for combo, listas_fitness in resultados_fitness.items():
-        promedio = np.mean(listas_fitness, axis=0)
-        plt.plot(promedio, label=combo)
+        mejor_fitness = np.min(listas_fitness, axis=0)
+        error_medio = np.mean(listas_fitness, axis=0)
+
+        plt.plot(mejor_fitness, label=f'{combo} - Mejor Fitness', color='blue')
+        plt.plot(error_medio, label=f'{combo} - Error Medio', color='orange', linestyle='--')
+
     plt.xlabel('Generaciones')
-    plt.ylabel('Mejor Fitness Promedio')
-    plt.title('Evolución del Mejor Fitness')
+    plt.ylabel('Valor')
+    plt.title('Mejor Fitness y Error Medio por Generación')
     plt.legend()
-    plt.grid()
+    plt.grid(True)
+
     if save_path:
         plt.savefig(save_path, bbox_inches='tight')
         plt.close()
@@ -85,22 +91,6 @@ def plot_generaciones_convergencia(generaciones_convergencia, save_path=None):
     plt.xticks(rotation=45)
     plt.ylabel('Generaciones hasta Convergencia')
     plt.title('Generaciones Necesarias hasta Convergencia')
-    plt.grid()
-    if save_path:
-        plt.savefig(save_path, bbox_inches='tight')
-        plt.close()
-    else:
-        plt.show()
-
-def plot_error_medio_generacion(resultados_fitness, save_path=None):
-    plt.figure(figsize=(10,6))
-    for combo, listas_fitness in resultados_fitness.items():
-        promedio = np.mean(listas_fitness, axis=0)
-        plt.plot(promedio, label=combo)
-    plt.xlabel('Generaciones')
-    plt.ylabel('Error Medio')
-    plt.title('Error Medio por Generación')
-    plt.legend()
     plt.grid()
     if save_path:
         plt.savefig(save_path, bbox_inches='tight')
