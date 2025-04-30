@@ -33,18 +33,24 @@ def plot_fitness_y_error_juntos(resultados_fitness, save_path=None):
     else:
         plt.show()
 
-def plot_boxplot_fitness_final(fitness_final, save_path=None):
+
+def plot_boxplot_fitness_final(fitness_final_dict, save_path=None):
     data = []
     labels = []
-    for combo, fitness_list in fitness_final.items():
-        data.append(fitness_list)
-        labels.append(combo)
-    plt.figure(figsize=(10,6))
-    sns.boxplot(data=data)
-    plt.xticks(ticks=range(len(labels)), labels=labels, rotation=45)
-    plt.ylabel('Fitness Final')
-    plt.title('Distribución del Fitness Final por Combinación')
-    plt.grid()
+    for combo, fitness_list in fitness_final_dict.items():
+        data.extend(fitness_list)
+        labels.extend([combo] * len(fitness_list))
+
+    plt.figure(figsize=(10, 6))
+    ax = sns.boxplot(x=labels, y=data, showmeans=True)
+    # Superponer los puntos individuales de cada ejecución
+    sns.stripplot(x=labels, y=data, color='black', size=8, jitter=True, ax=ax)
+
+    plt.xlabel("Combinación")
+    plt.ylabel("Fitness Final")
+    plt.title("Distribución del Fitness Final por Combinación")
+    plt.grid(True)
+
     if save_path:
         plt.savefig(save_path, bbox_inches='tight')
         plt.close()
