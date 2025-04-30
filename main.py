@@ -158,12 +158,43 @@ y_pred = np.exp(a) + b*x_vals + c*x_vals**2 + d*x_vals**3 + e*x_vals**4 + g*x_va
 gr.plot_real_vs_predicho(x_vals, y_vals, y_pred, save_path=directorio+"/real_vs_predicho.png")
 
 # --- Nuevas gráficas pedidas ---
-# Fitness vs Tamaño de Población (aqui solo un punto)
-poblaciones_vs_fitness = {tamaño_poblacion: np.min(fitness_final)}
-gr.plot_fitness_vs_poblacion(poblaciones_vs_fitness, save_path=directorio+"/fitness_vs_poblacion.png")
+tamaños_a_probar = [10, 20, 30, 40, 50]
+poblaciones_vs_fitness = {}
+convergencia_por_combo = {}
 
-# Generaciones hasta convergencia
-convergencia_por_combo = {nombre_combo: generaciones_convergencia}
+for tam_pobl in tamaños_a_probar:
+    fitness_final_tmp = []
+    generaciones_convergencia_tmp = []
+
+    for ejec in range(n_ejecuciones):
+        best_ind, historico_mejores, _, _, _, _ = algoritmo_genetico(
+            n_generaciones=n_generaciones,
+            tamaño_poblacion=tam_pobl,
+            prob_cruce=prob_cruce,
+            prob_mutacion=prob_mutacion,
+            x_vals=x_vals,
+            y_vals=y_vals,
+            op_cruce=op_cruce,
+            op_mutacion=op_mutacion,
+            op_seleccion=op_seleccion
+        )
+        fitness_final_tmp.append(historico_mejores[-1])
+        
+        # Detección de convergencia por diferencia mínima
+
+        for i in range(1, len(historico_mejores)):
+            if abs(historico_mejores[i] - historico_mejores[i-1]) < 1e-6:
+                generaciones_convergencia_tmp.append(i)
+                break
+        else:
+            generaciones_convergencia_tmp.append(n_generaciones)
+
+    poblaciones_vs_fitness[tam_pobl] = np.mean(fitness_final_tmp)
+    convergencia_por_combo[f"Pob{tam_pobl}"] = generaciones_convergencia_tmp
+
+
+# Graficar ahora con muchos puntos
+gr.plot_fitness_vs_poblacion(poblaciones_vs_fitness, save_path=directorio+"/fitness_vs_poblacion.png")
 gr.plot_generaciones_convergencia(convergencia_por_combo, save_path=directorio+"/generaciones_convergencia.png")
 
 # Error medio por generación
