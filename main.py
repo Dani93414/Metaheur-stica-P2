@@ -4,12 +4,11 @@ import time
 from algoritmo import algoritmo_genetico
 import graficas as gr
 from graficas import (
-    plot_mejor_fitness,
+    plot_fitness_y_error_juntos,
     plot_boxplot_fitness_final,
     plot_tiempos,
     plot_fitness_vs_poblacion,
     plot_generaciones_convergencia,
-    plot_error_medio_generacion,
     plot_real_vs_predicho
 )
 
@@ -144,7 +143,6 @@ os.makedirs(directorio, exist_ok=True)
 
 # --- Gráficas principales ---
 
-gr.plot_mejor_fitness({nombre_combo: resultados_fitness}, save_path=directorio+"/mejor_fitness.png")
 gr.plot_boxplot_fitness_final({nombre_combo: fitness_final}, save_path=directorio+"/boxplot_fitness_final.png")
 gr.plot_tiempos({nombre_combo: tiempos}, save_path=directorio+"/tiempos_ejecucion.png")
 gr.graficar_poblacion_por_generacion(population_size, save_path=directorio+"/tamano_poblacion.png")
@@ -197,5 +195,6 @@ for tam_pobl in tamaños_a_probar:
 gr.plot_fitness_vs_poblacion(poblaciones_vs_fitness, save_path=directorio+"/fitness_vs_poblacion.png")
 gr.plot_generaciones_convergencia(convergencia_por_combo, save_path=directorio+"/generaciones_convergencia.png")
 
-# Error medio por generación
-gr.plot_error_medio_generacion({nombre_combo: resultados_fitness}, save_path=directorio+"/error_medio_generacion.png")
+#fitness y error medio
+gr.plot_fitness_y_error_juntos({nombre_combo: resultados_fitness}, save_path=directorio+"/fitness_y_error_juntos.png")
+
