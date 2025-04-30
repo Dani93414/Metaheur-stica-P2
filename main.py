@@ -92,8 +92,8 @@ y_vals = np.array([
 ])
 
 # --- Configuración de ejecución ---
-n_ejecuciones = 10
-n_generaciones = 100
+n_ejecuciones = 3
+n_generaciones = 2000
 tamaño_poblacion = 30
 prob_cruce = 0.9
 prob_mutacion = 0.1
@@ -104,11 +104,14 @@ fitness_final = []
 tiempos = []
 generaciones_convergencia = []
 mejores_individuos = []
+population_size= []
+cruces= []
+mutaciones= []
 
 # --- Ejecuciones múltiples ---
 for ejec in range(n_ejecuciones):
     start = time.time()
-    best_ind, historico_mejores, historico_promedios = algoritmo_genetico(
+    best_ind, historico_mejores, historico_promedios, population_size, cruces, mutaciones = algoritmo_genetico(
         n_generaciones=n_generaciones,
         tamaño_poblacion=tamaño_poblacion,
         prob_cruce=prob_cruce,
@@ -144,6 +147,8 @@ os.makedirs(directorio, exist_ok=True)
 gr.plot_mejor_fitness({nombre_combo: resultados_fitness}, save_path=directorio+"/mejor_fitness.png")
 gr.plot_boxplot_fitness_final({nombre_combo: fitness_final}, save_path=directorio+"/boxplot_fitness_final.png")
 gr.plot_tiempos({nombre_combo: tiempos}, save_path=directorio+"/tiempos_ejecucion.png")
+gr.graficar_poblacion_por_generacion(population_size, save_path=directorio+"/tamano_poblacion.png")
+gr.graficar_cruces_y_mutaciones(cruces, mutaciones, save_path=directorio+"/numero_cruces_y_mutaciones.png")
 
 # Opcional: Real vs Predicho con mejor individuo promedio
 mejor_individuo = mejores_individuos[np.argmin(fitness_final)]

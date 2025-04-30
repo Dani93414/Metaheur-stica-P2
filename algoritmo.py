@@ -23,6 +23,9 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
     # Estadísticas por generación
     historico_mejores = []
     historico_promedios = []
+    population_size = []
+    cruces= []
+    mutaciones= []
 
     # Registro del mejor individuo global
     best_global = None
@@ -57,27 +60,36 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         else:
             raise ValueError("Opción de selección no válida")
 
+        cruce= 0
         # Cruce
         if op_cruce == 1:
-            hijos = cr.cruce_uniforme(padres, prob_cruce)
+            hijos, cruce = cr.cruce_uniforme(padres, prob_cruce)
+            cruces.append(cruce)
         elif op_cruce == 2:
-            hijos = cr.cruce_un_punto(padres, prob_cruce)
+            hijos, cruce = cr.cruce_un_punto(padres, prob_cruce)
+            cruces.append(cruce)
         elif op_cruce == 3:
-            hijos = cr.cruce_blx(padres, prob_cruce)
+            hijos, cruce = cr.cruce_blx(padres, prob_cruce)
+            cruces.append(cruce)
         elif op_cruce == 4:
-            hijos = cr.cruce_aritmetico_simple(padres, prob_cruce)
+            hijos, cruce = cr.cruce_aritmetico_simple(padres, prob_cruce)
+            cruces.append(cruce)
         else:
             raise ValueError("Opción de cruce no válida")
 
         # Mutación adaptativa
         prob_mut_actual = prob_mutacion * (1 - gen / n_generaciones)
 
+        mut= 0
         if op_mutacion == 1:
-            hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mut_actual)
+            hijos_mutados, mut = mt.mutacion_gaussiana(hijos, prob_mut_actual)
+            mutaciones.append(mut)
         elif op_mutacion == 2:
-            hijos_mutados = mt.mutacion_intercambio(hijos, prob_mut_actual)
+            hijos_mutados, mut = mt.mutacion_intercambio(hijos, prob_mut_actual)
+            mutaciones.append(mut)
         elif op_mutacion == 3:
-            hijos_mutados = mt.mutacion_uniforme(hijos, prob_mut_actual)
+            hijos_mutados, mut = mt.mutacion_uniforme(hijos, prob_mut_actual)
+            mutaciones.append(mut)
         else:
             raise ValueError("Opción de mutación no válida")
 
@@ -97,10 +109,12 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         # Actualizar población
         population = hijos_mutados
 
+        population_size.append(len(population))
+
     # Resultado final: usar el mejor individuo global
     print("\nMejor individuo encontrado globalmente:")
     print(f"Coeficientes: {np.round(best_global, 4)}")
     print(f"Error: {best_global_fit:.5f}")
 
     # Devolver estadísticas por si quieres graficar
-    return best_global, historico_mejores, historico_promedios
+    return best_global, historico_mejores, historico_promedios, population_size, cruces, mutaciones

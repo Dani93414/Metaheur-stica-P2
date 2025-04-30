@@ -2,25 +2,29 @@ import numpy as np
 
 def cruce_uniforme(padres, prob_cruce):
     hijos = []
+    cruces= 0
     for i in range(0, len(padres), 2):
         p1 = padres[i]
         p2 = padres[i+1]
         if np.random.rand() < prob_cruce:
+            cruces+= 1
             mask = np.random.rand(len(p1)) < 0.5
             hijo1 = np.where(mask, p1, p2)
             hijo2 = np.where(mask, p2, p1)
         else:
             hijo1, hijo2 = p1.copy(), p2.copy()
         hijos.extend([hijo1, hijo2])
-    return hijos
+    return hijos, cruces
 
 
 def cruce_un_punto(padres, prob_cruce, pto=4):
     hijos = []
+    cruces= 0
     for i in range(0, len(padres), 2):
         p1 = padres[i]
         p2 = padres[i+1]
         if np.random.rand() < prob_cruce:
+            cruces+= 1
             hijo1, hijo2 = [], []  # Inicializar las listas de hijos correctamente
             
             for j in range(0, len(p1)):
@@ -34,16 +38,18 @@ def cruce_un_punto(padres, prob_cruce, pto=4):
             hijo1, hijo2 = p1.copy(), p2.copy()
 
         hijos.extend([hijo1, hijo2])
-    return hijos
+    return hijos, cruces
 
 
 
 def cruce_blx(padres, prob_cruce, alpha=0.1):
     hijos = []
+    cruces= 0
     for i in range(0, len(padres), 2):
         p1 = padres[i]
         p2 = padres[i+1]
         if np.random.rand() < prob_cruce:
+            cruces+= 1
             hijo1, hijo2 = [], []  # Inicialización de hijo1 y hijo2
             
             for j in range(0, len(p1)):
@@ -64,16 +70,18 @@ def cruce_blx(padres, prob_cruce, alpha=0.1):
             hijo1, hijo2 = p1.copy(), p2.copy()
 
         hijos.extend([hijo1, hijo2])
-    return hijos
+    return hijos, cruces
 
 
 
 def cruce_aritmetico_simple(padres, prob_cruce):
     hijos = []
+    cruces= 0
     for i in range(0, len(padres), 2):
         p1 = padres[i]
         p2 = padres[i+1]
         if np.random.rand() < prob_cruce:
+            cruces+= 1
             hijo1 = []
             for j in range(0, len(p1)):
                 hijo1.append((p1[j] + p2[j]) / 2)
@@ -85,4 +93,4 @@ def cruce_aritmetico_simple(padres, prob_cruce):
             hijo1, hijo2 = p1.copy(), p2.copy()
 
         hijos.extend([hijo1, hijo2])
-    return hijos
+    return hijos, cruces

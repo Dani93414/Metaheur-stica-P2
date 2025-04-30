@@ -123,3 +123,42 @@ def plot_real_vs_predicho(x_vals, y_true, y_pred, save_path=None):
         plt.close()
     else:
         plt.show()
+
+def graficar_poblacion_por_generacion(poblaciones, save_path=None):
+    generaciones = list(range(1, len(poblaciones) + 1))
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(generaciones, poblaciones, marker='o', linestyle='-', color='blue')
+    plt.title('Evolución del Tamaño de Población por Generación')
+    plt.xlabel('Generación')
+    plt.ylabel('Cantidad de Individuos')
+    plt.grid(True)
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight')
+        plt.close()
+    else:
+        plt.show()
+
+
+def graficar_cruces_y_mutaciones(cruces, mutaciones, save_path=None):
+    generaciones = list(range(1, len(cruces) + 1))
+    
+    plt.figure(figsize=(10, 6))
+    
+    # Líneas con menor grosor y color más estilizado
+    plt.plot(generaciones, cruces, marker='o', linestyle='-', linewidth=1.5, color='#1f77b4', label='Cruces')
+    plt.plot(generaciones, mutaciones, marker='s', linestyle='--', linewidth=1.5, color='#ff7f0e', label='Mutaciones')
+    
+    plt.title('Cruces y Mutaciones por Generación')
+    plt.xlabel('Generación')
+    plt.ylabel('Cantidad')
+    plt.legend()
+    plt.grid(True, linestyle=':', linewidth=0.5)
+    plt.tight_layout()
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight')
+        plt.close()
+    else:
+        plt.show()
