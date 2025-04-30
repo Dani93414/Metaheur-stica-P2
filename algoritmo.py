@@ -10,8 +10,8 @@ def initialize_population(size, bounds=(-5, 5)):
 # ---------- EVALUACIÓN ----------
 def evaluate(individual, x_vals, y_vals):
     a, b, c, d, e, g, h, i = individual
-    preds = np.exp(a + b*x_vals + c*x_vals**2 + d*x_vals**3 + e*x_vals**4 +
-                   g*x_vals**5 + h*x_vals**6 + i*x_vals**7)
+    preds = np.exp(a) + b*x_vals + c*x_vals**2 + d*x_vals**3 + e*x_vals**4 + \
+            g*x_vals**5 + h*x_vals**6 + i*x_vals**7
     return np.mean((preds - y_vals)**2)
 
 # ---------- ALGORITMO PRINCIPAL ----------
@@ -24,12 +24,26 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
     historico_mejores = []
     historico_promedios = []
 
+    # Registro del mejor individuo global
+    best_global = None
+    best_global_fit = float('inf')
+
     for gen in range(n_generaciones):
         fitness = np.array([evaluate(ind, x_vals, y_vals) for ind in population])
 
         # Guardar estadísticas
-        historico_mejores.append(np.min(fitness))
-        historico_promedios.append(np.mean(fitness))
+        mejor_fitness = np.min(fitness)
+        promedio_fitness = np.mean(fitness)
+        historico_mejores.append(mejor_fitness)
+        historico_promedios.append(promedio_fitness)
+
+        # Actualizar el mejor individuo global
+        if mejor_fitness < best_global_fit:
+            best_global_fit = mejor_fitness
+            best_global = population[np.argmin(fitness)]
+
+        # Mensajes informativos
+        print(f"Generación {gen}: Mejor error = {mejor_fitness:.5f}, Error promedio = {promedio_fitness:.5f}")
 
         # Selección
         if op_seleccion == 1:
@@ -61,7 +75,7 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         if op_mutacion == 1:
             hijos_mutados = mt.mutacion_gaussiana(hijos, prob_mut_actual)
         elif op_mutacion == 2:
-            hijos_mutados = mt.mutacion_intercambio(hijos, prob_mutacion)
+            hijos_mutados = mt.mutacion_intercambio(hijos, prob_mut_actual)
         elif op_mutacion == 3:
             hijos_mutados = mt.mutacion_uniforme(hijos, prob_mut_actual)
         else:
@@ -75,19 +89,18 @@ def algoritmo_genetico(n_generaciones, tamaño_poblacion, prob_cruce, prob_mutac
         elite = population[elite_idx]
         elite_fit = fitness[elite_idx]
 
+        # Reemplazar al peor de los hijos con la élite
+        worst_idx = np.argmax(hijos_fitness)
+        hijos_mutados[worst_idx] = elite
+        hijos_fitness[worst_idx] = elite_fit
+
+        # Actualizar población
         population = hijos_mutados
-        population[np.random.randint(len(population))] = elite
 
-        print(f"Generación {gen}: Mejor error = {elite_fit:.5f}")
-
-    # Resultado final
-    best_idx = np.argmin([evaluate(ind, x_vals, y_vals) for ind in population])
-    best_ind = population[best_idx]
-    best_fit = evaluate(best_ind, x_vals, y_vals)
-
-    print("\nMejor individuo encontrado:")
-    print(f"Coeficientes: {np.round(best_ind, 4)}")
-    print(f"Error: {best_fit:.5f}")
+    # Resultado final: usar el mejor individuo global
+    print("\nMejor individuo encontrado globalmente:")
+    print(f"Coeficientes: {np.round(best_global, 4)}")
+    print(f"Error: {best_global_fit:.5f}")
 
     # Devolver estadísticas por si quieres graficar
-    return best_ind, historico_mejores, historico_promedios
+    return best_global, historico_mejores, historico_promedios
